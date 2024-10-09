@@ -12,6 +12,17 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalErrorHandler {
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>>  showErrors(MethodArgumentNotValidException ex){
 
+        Map<String,String> errorList = new HashMap<>();
+        for(FieldError error : ex.getBindingResult().getFieldErrors()){
+            String err_name = error.getField();
+            String err_message = error.getDefaultMessage();
+            errorList.put(err_name, err_message);
+        }
+
+        return ResponseEntity.status(400).body(errorList);
+    }
 
 }
